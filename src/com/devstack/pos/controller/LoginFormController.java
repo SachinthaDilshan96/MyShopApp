@@ -1,5 +1,7 @@
 package com.devstack.pos.controller;
 
+import com.devstack.pos.dao.DatabaseAccessCode;
+import com.devstack.pos.dto.UserDto;
 import com.devstack.pos.util.PasswordManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -20,23 +22,17 @@ public class LoginFormController {
 
     public void SigninOnAction(ActionEvent actionEvent) throws IOException {
           try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/myshop_db","root","Liyanage36@");
-            String sql = "select * from user where email = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,txtEmail.getText());
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                if (PasswordManager.checkPassword(txtPassword.getText(),resultSet.getString("password"))){
-                    System.out.println("user found");
+              UserDto userDto = DatabaseAccessCode.findUser(txtEmail.getText());
+              if (userDto!=null){
+                if (PasswordManager.checkPassword(txtPassword.getText(),userDto.getPassword())){
+                    setUi("DashboardForm");
                 }else {
                     new Alert(Alert.AlertType.WARNING,"Check tha password and try again").show();
                 }
             }else {
                 new Alert(Alert.AlertType.WARNING,"Email not found").show();
             }
-        }catch (ClassNotFoundException | SQLException e){
+        }catch (ClassNotFoundException | SQLException|IOException  e){
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR,e.toString()).show();
         }
@@ -47,9 +43,9 @@ public class LoginFormController {
     }
     private void setUi(String url) throws IOException {
         Stage stage = (Stage)context.getScene().getWindow();
+        stage.centerOnScreen();
         stage.setScene(
                 new Scene(FXMLLoader.load(getClass().getResource("../view/"+url+".fxml")))
         );
-        stage.centerOnScreen();
     }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="context" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.devstack.pos.controller.DashboardFormController">
+   <children>
+      <Label layoutX="15.0" layoutY="15.0" text="Dashboard" textFill="#c32727">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+      </Label>
+      <Separator layoutX="14.0" layoutY="49.0" prefHeight="2.0" prefWidth="543.0" />
+      <Button fx:id="btnCustomerManagement" layoutX="15.0" layoutY="66.0" mnemonicParsing="false" onAction="#customerManagementOnAction" prefHeight="106.0" prefWidth="180.0" style="-fx-background-color: #3498db;" text="Customer Management" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnProductManagement" layoutX="210.0" layoutY="66.0" mnemonicParsing="false" onAction="#productManagementOnAction" prefHeight="106.0" prefWidth="180.0" style="-fx-background-color: #2ecc71;" text="Product Management" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnPlaceOrder" layoutX="406.0" layoutY="66.0" mnemonicParsing="false" onAction="#placeOrderOnAction" prefHeight="106.0" prefWidth="180.0" style="-fx-background-color: #d35400;" text="Place Order" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnOrderDetails" layoutX="15.0" layoutY="194.0" mnemonicParsing="false" onAction="#OrderDetailsOnAction" prefHeight="106.0" prefWidth="281.0" style="-fx-background-color: #f1c40f;" text="Order Details" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnIncomeReport" layoutX="305.0" layoutY="194.0" mnemonicParsing="false" onAction="#incomeReportOnAction" prefHeight="106.0" prefWidth="281.0" style="-fx-background-color: #2c3e50;" text="Income Report" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
