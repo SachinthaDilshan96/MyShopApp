@@ -22,7 +22,7 @@ public class LoginFormController {
 
     public void SigninOnAction(ActionEvent actionEvent) throws IOException {
           try {
-              UserDto userDto = DatabaseAccessCode.findUser(txtEmail.getText());
+              UserDto userDto = new DatabaseAccessCode().findUser(txtEmail.getText());
               if (userDto!=null){
                 if (PasswordManager.checkPassword(txtPassword.getText(),userDto.getPassword())){
                     setUi("DashboardForm");

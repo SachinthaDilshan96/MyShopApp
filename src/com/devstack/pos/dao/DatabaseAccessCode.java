@@ -1,7 +1,17 @@
 package com.devstack.pos.dao;
 
+import com.devstack.pos.dao.custom.CustomerDao;
+import com.devstack.pos.dao.custom.ProductDao;
+import com.devstack.pos.dao.custom.UserDao;
+import com.devstack.pos.dao.custom.impl.CustomerDaoImpl;
+import com.devstack.pos.dao.custom.impl.ProductDaoImpl;
+import com.devstack.pos.dao.custom.impl.UserDaoImpl;
+import com.devstack.pos.db.DbConnection;
 import com.devstack.pos.dto.CustomerDto;
 import com.devstack.pos.dto.UserDto;
+import com.devstack.pos.entity.Customer;
+import com.devstack.pos.entity.Product;
+import com.devstack.pos.entity.User;
 import com.devstack.pos.util.PasswordManager;
 
 import java.sql.*;
@@ -9,114 +19,81 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseAccessCode {
-    // user management
-    public static boolean createUser(String email, String password) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/myshop_db","root","Liyanage36@");
-        String sql = "insert into user values (?,?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,email);
-        preparedStatement.setString(2, PasswordManager.encryptPassword(password));
-        return preparedStatement.executeUpdate()>0;
+
+    CustomerDao customerDao = new CustomerDaoImpl();
+    ProductDao productDao = new ProductDaoImpl();
+    UserDao userDao = new UserDaoImpl();
+
+    //user management
+    public boolean createUser(String email,String password) throws ClassNotFoundException, SQLException {
+        return userDao.saveUser(
+                new User(email,password)
+        );
     }
 
-    public static UserDto findUser(String email) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/myshop_db","root","Liyanage36@");
+    public UserDto findUser(String email) throws ClassNotFoundException, SQLException {
         String sql = "select * from user where email = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        PreparedStatement preparedStatement = DbConnection.getInstance().getConnection().prepareStatement(sql);
         preparedStatement.setString(1,email);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()){
-            return new UserDto(resultSet.getString(1),resultSet.getString(2));
+        User user = userDao.findUser(email);
+        if (user!=null){
+            return new UserDto(user.getEmail(),user.getPassword());
         }
         return null;
-    }
-    //customer management
-    public static boolean createCustomer(String email, String name, String contact, double salary) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/myshop_db","root","Liyanage36@");
-        String sql = "insert into customer values (?,?,?,?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,email);
-        preparedStatement.setString(2, name);
-        preparedStatement.setString(3, contact);
-        preparedStatement.setDouble(4, salary);
-        return preparedStatement.executeUpdate()>0;
+     }
 
+     //customer management
+     public boolean createCustomer(String email,String name,String contact,double salary) throws SQLException, ClassNotFoundException {
+        return customerDao.saveCustomer(
+                new Customer(email,name,contact,salary)
+        );
+     }
+
+    public boolean updateCustomer(String email,String name,String contact,double salary) throws SQLException, ClassNotFoundException {
+        return customerDao.updateCustomer(new Customer(email,name,contact,salary));
     }
 
-    public static boolean updateCustomer(String email, String name, String contact, double salary) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/myshop_db","root","Liyanage36@");
-        String sql = "update customer set name=?, contact=?,salary=? where email=?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,name);
-        preparedStatement.setString(2, contact);
-        preparedStatement.setDouble(3, salary);
-        preparedStatement.setString(4, email);
-        return preparedStatement.executeUpdate()>0;
 
+    public boolean deleteCustomer(String email) throws SQLException, ClassNotFoundException {
+        return customerDao.deleteCustomer(email);
     }
-    public static CustomerDto findCustomer(String email) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/myshop_db","root","Liyanage36@");
-        String sql = "select * from customer where email=?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,email);
-        ResultSet resultSet= preparedStatement.executeQuery();
-        if (resultSet.next()){
-            return new CustomerDto(resultSet.getString(1),resultSet.getString(2),resultSet.getString(3),resultSet.getDouble(4));
+
+    public CustomerDto findCustomer(String email) throws SQLException, ClassNotFoundException {
+       Customer customer = customerDao.findCustomer(email);
+       if (customer!=null){
+           return new CustomerDto( customer.getEmail(),customer.getName(),customer.getContact(),customer.getSalary());
+       }
+       return null;
+    }
+
+    public List<CustomerDto> findAllCustomers() throws SQLException, ClassNotFoundException {
+        List<CustomerDto> dtos = new ArrayList<>();
+        for (Customer c: customerDao.findAllCustomer()){
+            dtos.add(new CustomerDto(c.getEmail(),c.getName(),c.getContact(),c.getSalary()));
         }
-        return null;
-    }
-    public static boolean deleteCustomer(String email) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/myshop_db","root","Liyanage36@");
-        String sql = "delete from customer where email=?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,email);
-        return preparedStatement.executeUpdate()>0;
-    }
-    public static List<CustomerDto> findAllCustomers() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/myshop_db","root","Liyanage36@");
-        String sql = "select * from customer";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        ResultSet resultSet= preparedStatement.executeQuery();
-        List<CustomerDto> customerDtos = new ArrayList<>();
-        while (resultSet.next()){
-            customerDtos.add(
-                    new CustomerDto(
-                            resultSet.getString(1),
-                            resultSet.getString(2),
-                            resultSet.getString(3),
-                            resultSet.getDouble(4)));
-        }
-        return customerDtos;
+        return dtos;
     }
 
-    public static List<CustomerDto> searchCustomers(String searchText) throws ClassNotFoundException, SQLException {
+    public List<CustomerDto> searchCustomers(String searchText) throws SQLException, ClassNotFoundException {
         searchText =  "%"+searchText+"%";
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/myshop_db","root","Liyanage36@");
-        String sql = "select * from customer where  email like ? || name like ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,searchText);
-        preparedStatement.setString(2,searchText);
-        ResultSet resultSet= preparedStatement.executeQuery();
-        List<CustomerDto> customerDtos = new ArrayList<>();
-        while (resultSet.next()){
-            customerDtos.add(
-                    new CustomerDto(
-                            resultSet.getString(1),
-                            resultSet.getString(2),
-                            resultSet.getString(3),
-                            resultSet.getDouble(4)));
+        List<CustomerDto> dtos = new ArrayList<>();
+        for (Customer c: customerDao.searchCustomers(searchText)){
+            dtos.add(new CustomerDto(c.getEmail(),c.getName(),c.getContact(),c.getSalary()));
         }
-        return customerDtos;
+        return dtos;
     }
 
+    //product management
+    public int getLastProductId() throws SQLException, ClassNotFoundException {
+        return productDao.getLastProductId();
+    }
 
+    public boolean saveProduct(int code, String description) throws SQLException, ClassNotFoundException {
+        return productDao.saveProduct(new Product(code,description));
+    }
+
+    public boolean updateProduct(int code, String description) throws SQLException, ClassNotFoundException {
+        return productDao.updateProduct(new Product(code,description));
+    }
 }

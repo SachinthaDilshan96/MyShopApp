@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class CustomerFormController {
 
@@ -52,6 +53,14 @@ public class CustomerFormController {
                         setData(newValue);
                     }
                 });
+        txtSearch.textProperty().addListener(((observable, oldValue, newValue) -> {
+            searchText = newValue;
+            try{
+                loadAllCustomers(searchText);
+            }catch (SQLException|ClassNotFoundException e){
+                throw new RuntimeException(e);
+            }
+        }));
     }
 
     private void setData(CustomerTm newValue) {
@@ -67,9 +76,27 @@ public class CustomerFormController {
     private void loadAllCustomers(String searchText) throws SQLException, ClassNotFoundException {
         ObservableList<CustomerTm> observableList = FXCollections.observableArrayList();
         int counter = 1;
-        for(CustomerDto dto:DatabaseAccessCode.searchCustomers(searchText)){
-            CustomerTm tm = new CustomerTm(counter++,dto.getEmail(), dto.getName(), dto.getContact(), dto.getSalary(),new Button("Delete"));
+        for(CustomerDto dto:searchText.length()>0?new DatabaseAccessCode().searchCustomers(searchText):new DatabaseAccessCode().findAllCustomers()){
+            Button btn =new Button("Delete");
+            CustomerTm tm = new CustomerTm(counter++,dto.getEmail(), dto.getName(), dto.getContact(), dto.getSalary(),btn);
             observableList.add(tm);
+            btn.setOnAction((e)->{
+                try{
+                    Alert alert =new Alert(Alert.AlertType.CONFIRMATION,"Are you sure?",ButtonType.OK,ButtonType.NO);
+                    Optional<ButtonType> selectedButtonType = alert.showAndWait();
+                    if (selectedButtonType.get().equals(ButtonType.YES)){
+                        if (new DatabaseAccessCode().deleteCustomer(dto.getEmail())){
+                            new Alert(Alert.AlertType.CONFIRMATION,"Customer Deleted!").show();
+                            loadAllCustomers(searchText);
+                        }else {
+                            new Alert(Alert.AlertType.WARNING,"Try Again!").show();
+                        }
+                    }
+                }catch (SQLException|ClassNotFoundException er){
+                    er.printStackTrace();
+                    new Alert(Alert.AlertType.ERROR,er.getMessage()).show();
+                }
+            });
         }
         tblCustomer.setItems(observableList);
     }
@@ -92,26 +119,15 @@ public class CustomerFormController {
     }
 
     public void SaveCustomerOnAction(ActionEvent actionEvent) {
-     /*   try{
-            if(DatabaseAccessCode.updateCustomer(txtEmail.getText(),txtName.getText(),txtContact.getText(),Double.parseDouble(txtSalary.getText()))){
-                new Alert(Alert.AlertType.CONFIRMATION,"Customer Updated!").show();
-                clearFields();
-                loadAllCustomers(searchText);
-            }
-
-        }catch (ClassNotFoundException| SQLException e){
-            e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR,e.getMessage()).show();
-        }*/
         try{
             if (btnSaveCustomer.getText().equals("Save Customer")){
-                if(DatabaseAccessCode.createCustomer(txtEmail.getText(),txtName.getText(),txtContact.getText(),Double.parseDouble(txtSalary.getText()))){
+                if(new DatabaseAccessCode().createCustomer(txtEmail.getText(),txtName.getText(),txtContact.getText(),Double.parseDouble(txtSalary.getText()))){
                     new Alert(Alert.AlertType.CONFIRMATION,"Customer Saved!").show();
                     clearFields();
                     loadAllCustomers(searchText);
                 }
             }else {
-                if(DatabaseAccessCode.updateCustomer(txtEmail.getText(),txtName.getText(),txtContact.getText(),Double.parseDouble(txtSalary.getText()))){
+                if(new DatabaseAccessCode().updateCustomer(txtEmail.getText(),txtName.getText(),txtContact.getText(),Double.parseDouble(txtSalary.getText()))){
                     new Alert(Alert.AlertType.CONFIRMATION,"Customer Updated!").show();
                     clearFields();
                     loadAllCustomers(searchText);
