@@ -4,6 +4,7 @@
       <root url="jar://$PROJECT_DIR$/lib/jfoenix-19.0.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/mysql-connector-java-8.0.30.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jbcrypt-0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/apache/commons-codec-1.10.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

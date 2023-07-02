@@ -1,5 +1,6 @@
 package com.devstack.pos.dao.custom.impl;
 
+import com.devstack.pos.dao.CrudUtil;
 import com.devstack.pos.dao.custom.ProductDao;
 import com.devstack.pos.db.DbConnection;
 import com.devstack.pos.entity.Product;
@@ -12,37 +13,23 @@ import java.util.List;
 
 public class ProductDaoImpl implements ProductDao {
     @Override
-    public boolean saveProduct(Product product) throws SQLException, ClassNotFoundException {
-        String sql = "insert into product values(?,?)";
-        PreparedStatement preparedStatement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        preparedStatement.setInt(1,product.getCode());
-        preparedStatement.setString(2,product.getDescription());
-        return preparedStatement.executeUpdate()>0;
+    public boolean save(Product product) throws SQLException, ClassNotFoundException {
+        return CrudUtil.execute("insert into product values(?,?)",product.getCode(),product.getDescription());
     }
 
     @Override
-    public boolean updateProduct(Product product) throws SQLException, ClassNotFoundException {
-        String sql = "update product set description = ? where code = ?";
-        PreparedStatement preparedStatement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        preparedStatement.setString(1,product.getDescription());
-        preparedStatement.setInt(2,product.getCode());
-        return preparedStatement.executeUpdate()>0;
+    public boolean update(Product product) throws SQLException, ClassNotFoundException {
+        return CrudUtil.execute( "update product set description = ? where code = ?",product.getDescription(),product.getCode());
     }
 
     @Override
-    public boolean deleteProduct(int code) throws SQLException, ClassNotFoundException {
-        String sql = "delete from product where code = ?";
-        PreparedStatement preparedStatement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        preparedStatement.setInt(1,code);
-        return preparedStatement.executeUpdate()>0;
+    public boolean delete(Integer code) throws SQLException, ClassNotFoundException {
+        return CrudUtil.execute("delete from product where code = ?",code);
     }
 
     @Override
-    public Product findProduct(int code) throws SQLException, ClassNotFoundException {
-        String sql = "select * from product where code = ?";
-        PreparedStatement preparedStatement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        preparedStatement.setInt(1,code);
-        ResultSet resultSet = preparedStatement.executeQuery();
+    public Product find(Integer code) throws SQLException, ClassNotFoundException {
+        ResultSet resultSet = CrudUtil.execute("select * from product where code = ?",code);
         if(resultSet.next()){
             return new Product(resultSet.getInt(1),resultSet.getString(2));
         }
@@ -50,10 +37,8 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> findAllProduct() throws SQLException, ClassNotFoundException {
-        String sql = "select * from product";
-        PreparedStatement preparedStatement = DbConnection. getInstance().getConnection().prepareStatement(sql);
-        ResultSet resultSet = preparedStatement.executeQuery();
+    public List<Product> findAll() throws SQLException, ClassNotFoundException {
+        ResultSet resultSet = CrudUtil.execute("select * from product");
         List<Product> productList = new ArrayList<>();
         while (resultSet.next()){
             productList.add(new Product(resultSet.getInt(1),resultSet.getString(2)));
@@ -63,9 +48,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public int getLastProductId() throws SQLException, ClassNotFoundException {
-        String sql = "select * from product order by code desc limit 1";
-        PreparedStatement preparedStatement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        ResultSet resultSet= preparedStatement.executeQuery();
+        ResultSet resultSet= CrudUtil.execute("select * from product order by code desc limit 1");
         if (resultSet.next()){
             return resultSet.getInt(1)+1;
         }

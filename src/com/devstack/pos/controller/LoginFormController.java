@@ -1,7 +1,10 @@
 package com.devstack.pos.controller;
 
-import com.devstack.pos.dao.DatabaseAccessCode;
+import com.devstack.pos.bo.BoFactory;
+import com.devstack.pos.bo.custom.UserBo;
+import com.devstack.pos.bo.custom.impl.UserBoImpl;
 import com.devstack.pos.dto.UserDto;
+import com.devstack.pos.enums.BoType;
 import com.devstack.pos.util.PasswordManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -20,9 +23,10 @@ public class LoginFormController {
     public TextField txtEmail;
     public PasswordField txtPassword;
 
+    UserBo bo = BoFactory.getInstance().getBo(BoType.USER);
     public void SigninOnAction(ActionEvent actionEvent) throws IOException {
           try {
-              UserDto userDto = new DatabaseAccessCode().findUser(txtEmail.getText());
+              UserDto userDto = bo.findUser(txtEmail.getText());
               if (userDto!=null){
                 if (PasswordManager.checkPassword(txtPassword.getText(),userDto.getPassword())){
                     setUi("DashboardForm");

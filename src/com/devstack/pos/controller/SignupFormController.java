@@ -1,7 +1,10 @@
 package com.devstack.pos.controller;
 
-import com.devstack.pos.dao.DatabaseAccessCode;
-import com.devstack.pos.util.PasswordManager;
+import com.devstack.pos.bo.BoFactory;
+import com.devstack.pos.bo.custom.UserBo;
+import com.devstack.pos.bo.custom.impl.UserBoImpl;
+import com.devstack.pos.dto.UserDto;
+import com.devstack.pos.enums.BoType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,20 +15,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class SignupFormController {
     public AnchorPane context;
     public TextField txtEmail;
     public PasswordField txtPassword;
-
+    UserBo bo = BoFactory.getInstance().getBo(BoType.USER);
     public void SignupOnAction(ActionEvent actionEvent) {
 
        try {
-           if (new DatabaseAccessCode().createUser(txtEmail.getText(),txtPassword.getText())){
+           if (bo.saveUser(new UserDto(txtEmail.getText(),txtPassword.getText()))){
                new Alert(Alert.AlertType.CONFIRMATION,"User Saved").show();
                clearFields();
            }

@@ -36,12 +36,12 @@
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
             <TextField fx:id="txtSearch" layoutX="4.0" layoutY="203.0" prefHeight="26.0" prefWidth="300.0" promptText="Search Here" />
-            <TableView layoutX="4.0" layoutY="232.0" prefHeight="197.0" prefWidth="300.0">
+            <TableView id="tblProducts" fx:id="tblProducts" layoutX="4.0" layoutY="232.0" prefHeight="197.0" prefWidth="300.0">
               <columns>
-                <TableColumn prefWidth="75.0" text="#" />
-                <TableColumn prefWidth="75.0" text="Description" />
-                  <TableColumn prefWidth="75.0" text="Show More" />
-                  <TableColumn prefWidth="75.0" text="Delete" />
+                <TableColumn fx:id="colProductID" prefWidth="75.0" text="#" />
+                <TableColumn fx:id="colProductDescription" prefWidth="75.0" text="Description" />
+                  <TableColumn fx:id="colProductShowMore" prefWidth="75.0" text="Show More" />
+                  <TableColumn fx:id="colProductDelete" prefWidth="75.0" text="Delete" />
               </columns>
             </TableView>
          </children>
@@ -51,16 +51,16 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <TextArea layoutX="327.0" layoutY="81.0" prefHeight="190.0" prefWidth="479.0" promptText="Description" />
-      <TableView layoutX="327.0" layoutY="282.0" prefHeight="200.0" prefWidth="479.0">
+      <TextArea fx:id="txtSelectedItemDesc" layoutX="327.0" layoutY="81.0" prefHeight="190.0" prefWidth="479.0" promptText="Description" />
+      <TableView fx:id="tblDetail" layoutX="327.0" layoutY="282.0" prefHeight="200.0" prefWidth="479.0">
         <columns>
-          <TableColumn prefWidth="35.0" text="#" />
-          <TableColumn prefWidth="64.0" text="QTY" />
-            <TableColumn text="Selling Price" />
-            <TableColumn prefWidth="75.0" text="Buying Price" />
-            <TableColumn prefWidth="75.0" text="Discount Av." />
-            <TableColumn prefWidth="75.0" text="Show Price" />
-            <TableColumn prefWidth="75.0" text="Delete" />
+          <TableColumn fx:id="colProdDetailId" prefWidth="35.0" text="#" />
+          <TableColumn fx:id="colProdDetailQty" prefWidth="64.0" text="QTY" />
+            <TableColumn fx:id="colProdDetailSeelingPrice" text="Selling Price" />
+            <TableColumn fx:id="colProdDetailBuyingPrice" prefWidth="75.0" text="Buying Price" />
+            <TableColumn fx:id="colProdDetailDiscAvailability" prefWidth="75.0" text="Discount Av." />
+            <TableColumn fx:id="colProdDetailShowPrice" prefWidth="75.0" text="Show Price" />
+            <TableColumn fx:id="colProdDetailDelete" prefWidth="75.0" text="Delete" />
         </columns>
       </TableView>
    </children>
