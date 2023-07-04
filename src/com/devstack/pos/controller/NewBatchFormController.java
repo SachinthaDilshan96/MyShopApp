@@ -6,6 +6,7 @@ import com.devstack.pos.dao.custom.ProductDetailDao;
 import com.devstack.pos.dto.ProductDetailDto;
 import com.devstack.pos.enums.BoType;
 import com.devstack.pos.util.QrDataGenerator;
+import com.devstack.pos.view.tm.ProductDetailTm;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -58,10 +60,35 @@ public class NewBatchFormController {
         imgBarcodeView.setImage(image);
     }
 
-    public void setDetail(int code,String description,Stage stage){
+    public void setDetail(int code, String description, Stage stage, boolean state, ProductDetailTm tm){
+        if (state){
+            try {
+                ProductDetailDto productDetail =productDetailBo.findProductDetails(tm.getCode());
+                if (productDetail!=null){
+                    txtQty.setText(String.valueOf(productDetail.getQtyOnHand()));
+                    txtBuyingPrice.setText(String.valueOf(productDetail.getBuyingPrice()));
+                    txtSellingPrice.setText(String.valueOf(productDetail.getSellingPrice()));
+                    txtShowPrice.setText(String.valueOf(productDetail.getShowPrice()));
+                    rbYes.setSelected(productDetail.getdiscountAvailabilty());
+
+                    byte[] data = Base64.getDecoder().decode(productDetail.getBarcode());
+                    imgBarcodeView.setImage(Image.impl_fromPlatformImage(new ByteArrayInputStream(data)));
+
+                }else {
+                    stage.close();
+                }
+            }catch (SQLException|ClassNotFoundException e){
+                throw new RuntimeException(e);
+            }
+        }else {
+            try {
+                setQRCode();
+            }catch (WriterException e){
+                throw new RuntimeException(e);
+            }
+        }
         txtProductCode.setText(String.valueOf(code));
         txtProductDescription.setText(description);
-        this.stage = stage;
     }
     public void SaveBatchOnACtion(ActionEvent actionEvent) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

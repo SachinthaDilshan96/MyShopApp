@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="context" prefHeight="560.0" prefWidth="690.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.devstack.pos.controller.PlaceOrderFormController">
+   <children>
+      <Label layoutX="8.0" layoutY="14.0" text="Place Order" textFill="#835a5a">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Separator layoutX="-3.0" layoutY="34.0" prefHeight="9.0" prefWidth="600.0" />
+      <RadioButton fx:id="rbManualMode" layoutX="14.0" layoutY="53.0" mnemonicParsing="false" text="Manual Mode" />
+      <RadioButton layoutX="133.0" layoutY="53.0" mnemonicParsing="false" text="Auto Mode" />
+      <Label layoutX="18.0" layoutY="86.0" text="Customer Details" textFill="#835a5a">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Separator layoutX="7.0" layoutY="106.0" prefHeight="9.0" prefWidth="600.0" />
+      <Button fx:id="btnBackToHome" layoutX="585.0" layoutY="13.0" mnemonicParsing="false" onAction="#BackToHomeOnAction" style="-fx-background-color: #d35400;" text="Back To Home" textFill="WHITE" />
+      <TextField fx:id="txtEmail" layoutX="16.0" layoutY="115.0" onAction="#searchCustomerOnAction" promptText="email" />
+      <TextField fx:id="txtName" layoutX="186.0" layoutY="115.0" promptText="Name" />
+      <TextField fx:id="txtContact" layoutX="354.0" layoutY="115.0" promptText="Contact" />
+      <TextField fx:id="txtSalary" layoutX="523.0" layoutY="115.0" promptText="Salary" />
+      <Button fx:id="btnNewProduct" layoutX="579.0" layoutY="76.0" mnemonicParsing="false" onAction="#NewProductOnACtion" style="-fx-background-color: #16a085;" text="+ New Product" textFill="WHITE" />
+      <Hyperlink fx:id="urlNewLoyalty" layoutX="16.0" layoutY="155.0" onAction="#NewLoyaltyOnAction" text="Show Loyalty Card Information" underline="true" visible="false" />
+      <Label fx:id="lblLoyalCustomer" layoutX="156.0" layoutY="89.0" text="(Loyalty Member)" textFill="#3289bf" visible="false">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <Label layoutX="18.0" layoutY="189.0" text="Product Details" textFill="#835a5a">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Separator layoutX="7.0" layoutY="212.0" prefHeight="9.0" prefWidth="675.0" />
+      <TextField fx:id="txtBarcode" layoutX="167.0" layoutY="185.0" onAction="#LoadProductOnAction" promptText="Product Code" />
+      <TextField fx:id="txtDescription" layoutX="16.0" layoutY="224.0" promptText="Description" />
+      <TextField fx:id="txtQtyOnHand" layoutX="186.0" layoutY="224.0" promptText="Qty on hand" />
+      <TextField fx:id="txtDiscount" layoutX="354.0" layoutY="226.0" promptText="Discount" />
+      <TextField fx:id="txtShowPrice" layoutX="527.0" layoutY="226.0" promptText="Show Price" />
+      <TextField fx:id="txtBuyingPrice" layoutX="17.0" layoutY="261.0" promptText="Buying Price" />
+      <Label layoutX="24.0" layoutY="301.0" text="Discount Available" textFill="#8d4747">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtSellingPrice" layoutX="186.0" layoutY="260.0" promptText="Selling Price" />
+      <TextField fx:id="txtQty" layoutX="354.0" layoutY="259.0" onAction="#AddToCartOnAction" promptText="Qty" />
+      <TableView fx:id="tblOrder" layoutX="16.0" layoutY="322.0" prefHeight="200.0" prefWidth="637.0">
+        <columns>
+          <TableColumn fx:id="colId" prefWidth="75.0" text="#" />
+          <TableColumn fx:id="colDescription" prefWidth="75.0" text="Description" />
+            <TableColumn fx:id="colSellingPrice" prefWidth="75.0" text="Selling Price" />
+            <TableColumn fx:id="colDiscount" prefWidth="75.0" text="Discount" />
+            <TableColumn fx:id="colShowPrice" prefWidth="75.0" text="Show Price" />
+            <TableColumn fx:id="colQty" prefWidth="75.0" text="Qty" />
+            <TableColumn fx:id="colTotal" prefWidth="75.0" text="Total" />
+            <TableColumn fx:id="colOperation" prefWidth="75.0" text="Opearation" />
+        </columns>
+      </TableView>
+      <Label layoutX="31.0" layoutY="533.0" text="Total Bill : " textFill="#2d2e2f">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblBill" layoutX="91.0" layoutY="533.0" text="0.00" textFill="#2d2e2f">
+         <font>
+            <Font name="System Bold" size="13.0" />
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnCompleteOrder" layoutX="567.0" layoutY="529.0" mnemonicParsing="false" onAction="#CompleteOrderOnAction" style="-fx-background-color: #2980b9;" text="Complete Order" textFill="WHITE" />
+      <Button fx:id="btnNewCustomer" layoutX="459.0" layoutY="76.0" mnemonicParsing="false" onAction="#NewCustomerOnAction" style="-fx-background-color: #16a085;" text="+ New Customer" textFill="WHITE" />
+   </children>
+</AnchorPane>

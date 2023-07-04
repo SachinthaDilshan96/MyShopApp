@@ -2,6 +2,8 @@ package com.devstack.pos.dao.custom.impl;
 
 import com.devstack.pos.dao.CrudUtil;
 import com.devstack.pos.dao.custom.ProductDetailDao;
+import com.devstack.pos.dto.ProductDetailDto;
+import com.devstack.pos.dto.ProductDetailJoinDto;
 import com.devstack.pos.entity.ProductDetail;
 
 import java.sql.ResultSet;
@@ -62,5 +64,45 @@ public class ProductDetailDaoImpl implements ProductDetailDao {
             ));
         }
         return list;
+    }
+
+    @Override
+    public ProductDetail findProductDetails(String code) throws SQLException, ClassNotFoundException {
+        ResultSet resultSet = CrudUtil.execute("select * from product_detail where code=?",code);
+        if (resultSet.next()){
+            return new ProductDetail(
+                    resultSet.getString(1),
+                    resultSet.getString(2),
+                    resultSet.getInt(3),
+                    resultSet.getDouble(4),
+                    resultSet.getDouble(6),
+                    resultSet.getDouble(8),
+                    resultSet.getInt(7),
+                    resultSet.getBoolean(5)
+            );
+        }
+        return null;
+    }
+
+    @Override
+    public ProductDetailJoinDto findProductDetailJoinData(String code) throws SQLException, ClassNotFoundException {
+        ResultSet resultSet = CrudUtil.execute("select * from product_detail pd join product p on pd.code=? and pd.product_code=p.code ",code);
+        if (resultSet.next()){
+            return new ProductDetailJoinDto(
+                    resultSet.getInt(9),
+                    resultSet.getString(10),
+                    new ProductDetailDto(
+                            resultSet.getString(1),
+                            resultSet.getString(2),
+                            resultSet.getInt(3),
+                            resultSet.getDouble(4),
+                            resultSet.getDouble(6),
+                            resultSet.getDouble(8),
+                            resultSet.getInt(7),
+                            resultSet.getBoolean(5)
+                    )
+            );
+        }
+        return null;
     }
 }

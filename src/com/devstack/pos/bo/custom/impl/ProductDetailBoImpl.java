@@ -4,6 +4,7 @@ import com.devstack.pos.bo.custom.ProductDetailBo;
 import com.devstack.pos.dao.DaoFactory;
 import com.devstack.pos.dao.custom.ProductDetailDao;
 import com.devstack.pos.dto.ProductDetailDto;
+import com.devstack.pos.dto.ProductDetailJoinDto;
 import com.devstack.pos.dto.ProductDto;
 import com.devstack.pos.entity.ProductDetail;
 import com.devstack.pos.enums.DaoType;
@@ -37,5 +38,28 @@ public class ProductDetailBoImpl implements ProductDetailBo {
             ));
         }
         return dtos;
+    }
+
+    @Override
+    public ProductDetailDto findProductDetails(String code) throws SQLException, ClassNotFoundException {
+        ProductDetail d = dao.findProductDetails(code);
+        if (d!=null){
+            return new ProductDetailDto(
+                    d.getCode(),
+                    d.getBarcode(),
+                    d.getQtyOnHand(),
+                    d.getSellingPrice(),
+                    d.getShowPrice(),
+                    d.getBuyingPrice(),
+                    d.getProductCode(),
+                    d.getdiscountAvailabilty()
+            );
+        }
+        return null;
+    }
+
+    @Override
+    public ProductDetailJoinDto findProductJoinDetail(String code) throws SQLException, ClassNotFoundException {
+       return dao.findProductDetailJoinData(code);
     }
 }

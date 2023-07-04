@@ -76,6 +76,15 @@ public class ProductMainFormController {
                     setData((ProductTm) newValue);
                 }
         );
+        tblDetail.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) ->{
+                    try {
+                        loadExternalUI(true,newValue);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
     }
 
     private void setData(ProductTm newValue) {
@@ -98,7 +107,8 @@ public class ProductMainFormController {
     }
 
     public void NewBatchOnAction(ActionEvent actionEvent) throws IOException {
-        if (!txtSelectedProductCode.getText().isEmpty()){
+       loadExternalUI( false,null);
+        /* if (!txtSelectedProductCode.getText().isEmpty()){
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/NewBatchForm.fxml"));
             Parent parent = fxmlLoader.load();
@@ -110,11 +120,26 @@ public class ProductMainFormController {
             stage.show();
         }else {
             new Alert(Alert.AlertType.WARNING,"Please select a valid one");
+        }*/
+    }
+    private void loadExternalUI(boolean state,ProductDetailTm tm) throws IOException {
+        if (!txtSelectedProductCode.getText().isEmpty()){
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/NewBatchForm.fxml"));
+            Parent parent = fxmlLoader.load();
+            NewBatchFormController controller = fxmlLoader.getController();
+            controller.setDetail(Integer.parseInt(txtSelectedProductCode.getText()),txtSelectedItemDesc.getText(),stage,state,tm);
+            stage.setScene(new Scene(parent));
+            stage.setTitle("New Batch");
+            stage.centerOnScreen();
+            stage.show();
+        }else {
+            new Alert(Alert.AlertType.WARNING,"Please select a valid one");
         }
     }
 
     public void BackToHomeOnAction(ActionEvent actionEvent) throws IOException {
-            setUi("DashboardForm");
+        setUi("DashboardForm");
     }
 
     public void NewProductOnAction(ActionEvent actionEvent) {
