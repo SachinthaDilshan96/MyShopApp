@@ -1,9 +1,6 @@
 package com.devstack.pos.dao;
 
-import com.devstack.pos.dao.custom.impl.CustomerDaoImpl;
-import com.devstack.pos.dao.custom.impl.ProductDaoImpl;
-import com.devstack.pos.dao.custom.impl.ProductDetailDaoImpl;
-import com.devstack.pos.dao.custom.impl.UserDaoImpl;
+import com.devstack.pos.dao.custom.impl.*;
 import com.devstack.pos.enums.DaoType;
 
 public class DaoFactory {
@@ -23,6 +20,12 @@ public class DaoFactory {
                 return (T) new CustomerDaoImpl();
             case PRODUCT_DETAIL:
                 return (T) new ProductDetailDaoImpl();
+            case ITEM_DETAIL:
+                return (T) new ItemDetailDaoImpl();
+            case ORDER_DETAIL:
+                return (T) new OrderDetailDaoImpl();
+            case LOYALTY_CARD:
+                return (T) new LoyaltyCardDaoImpl();
             default:
                 return null;
         }

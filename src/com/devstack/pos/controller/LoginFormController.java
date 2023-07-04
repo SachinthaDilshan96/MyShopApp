@@ -6,6 +6,7 @@ import com.devstack.pos.bo.custom.impl.UserBoImpl;
 import com.devstack.pos.dto.UserDto;
 import com.devstack.pos.enums.BoType;
 import com.devstack.pos.util.PasswordManager;
+import com.devstack.pos.util.UserSessionData;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -29,6 +30,7 @@ public class LoginFormController {
               UserDto userDto = bo.findUser(txtEmail.getText());
               if (userDto!=null){
                 if (PasswordManager.checkPassword(txtPassword.getText(),userDto.getPassword())){
+                    UserSessionData.email = txtEmail.getText();
                     setUi("DashboardForm");
                 }else {
                     new Alert(Alert.AlertType.WARNING,"Check tha password and try again").show();
